@@ -1,0 +1,5 @@
+{
+    "/api/*": "/$1",
+    "/posts/:postId": "/posts/:postId",
+    "/posts/getComments\\?postId=:postId": "/comments?postId=:postId"
+}
