@@ -1,25 +1,33 @@
-import axios from "axios";
+import axios from 'axios';
+import { envMap } from '../env';
+
+const baseurl = envMap.get('baseurl') ?? 'http://localhost:3001';
 
 export const axi = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: baseurl
 });
 
 export function setHeaderProp(key, val) {
-  if (typeof val !== "string") {
-    throw new Error("val must be string");
+  if (typeof val !== 'string') {
+    throw new Error('val must be string');
   }
-  axi.data.headers.set(key, val);
+  axi.defaults.headers[key] = val;
+  console.log('[setHeaderProp] after set!', key, axi.defaults);
 }
 
 export function delHeaderProp(key) {
-  if (typeof key !== "string") {
-    throw new Error("key must be string");
-  }
-  console.log(axi);
-
-  if (!axi.data.headers(key)) {
-    return;
+  if (typeof key !== 'string') {
+    throw new Error('key must be string');
   }
 
-  axi.data.headers[key] = undefined;
+  axi.defaults.headers[key] = undefined;
+  console.log('[setHeaderProp] after delete!', key, axi.defaults);
 }
+
+export default {
+  get: axi.get,
+  post: axi.post,
+  put: axi.put,
+  delete: axi.put,
+  patch: axi.patch
+};
