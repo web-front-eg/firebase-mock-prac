@@ -1,34 +1,87 @@
-import { getApp } from "firebase/app";
+import { getApp } from 'firebase/app';
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
-} from "firebase/auth";
+  signOut as fbSignOut
+} from 'firebase/auth';
 
-export const auth = getAuth(getApp());
+import HttpClient from '../../api/axios';
 
-export const loginAsync = async () => {
-  const provider = new GoogleAuthProvider();
+class Auth {
+  // #region field
+  _auth;
+  _googleAuthProvider;
+  // #endregion field
 
-  try {
-    const userCredential = await signInWithPopup(auth, provider);
+  // #region ctor
+  constructor() {
+    const app = getApp();
+    if (!app) {
+      throw new Error('[auth] Firebase App Initialisation failed!');
+    }
 
-    const credential = GoogleAuthProvider.credentialFromResult(userCredential);
-    const token = credential.accessToken;
-    const user = userCredential.user;
-
-    return {
-      token,
-      user,
-    };
-  } catch (firebaseErr) {
-    const { code, message, email } = firebaseErr;
-    const credential = GoogleAuthProvider.credentialFromError(firebaseErr);
-    const token = credential.accessToken;
-
-    console.error("fail to sign in with Google!", code, message, email, token);
+    this._auth = getAuth(app);
+    this._googleAuthProvider = new GoogleAuthProvider();
   }
-};
+  // #endregion ctor
 
-export const logoutAsync = async () => await signOut(auth);
+  // #region behaviours
+
+  _validateSignInResponse(signInResponse) {
+    if (signInResponse) return true;
+    else return false;
+  }
+
+  async signInAsync(setAuthInfo) {
+    // sign in thru GoogleAuthProvider()
+    const result = await signInWithPopup(
+      this._auth,
+      this._googleAuthProvider
+    ).catch(onRejected => {
+      throw new Error(
+        '[error][auth][google] result from signInWithPopup + GoogleAuthProvider failed!',
+        onRejected
+      );
+    });
+
+    // get a Google Access Token which can be used to access to the Google API.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const jwt = credential.accessToken;
+
+    // The current Google user info.
+    const user = result.user;
+
+    // load jwt to send web request
+    HttpClient.setHeaderAuthorization(jwt);
+
+    // send sign in web request
+    const response = await HttpClient.getMethods()
+      .get('user/me')
+      .then(err => {
+        throw err;
+      });
+
+    const isValid = this._validateSignInResponse(response);
+
+    // update auth info
+    if (!isValid) {
+      throw new Error('[SignIn] reponse is not valid!');
+    }
+
+    setAuthInfo({
+      user
+    });
+  }
+
+  async signOutAsync() {
+    // dispose additional any header data before signou
+    HttpClient.delHeaderAuthorization();
+
+    // do sign-out
+    return await fbSignOut(this._auth);
+  }
+  // #endregion behaviours
+}
+
+export default new Auth();
