@@ -1,33 +1,69 @@
 import axios from 'axios';
 import { envMap } from '../env';
 
-const baseurl = envMap.get('baseurl') ?? 'http://localhost:3001';
+class Axi {
+  //#region field
+  _axi;
+  //#endregion field
 
-export const axi = axios.create({
-  baseURL: baseurl
-});
+  // #region accessor
+  getMethods(methodName = '') {
+    const allMethods = {
+      get: this._axi.get,
+      post: this._axi.post,
+      put: this._axi.put,
+      delete: this._axi.put,
+      patch: this._axi.patch
+    };
 
-export function setHeaderProp(key, val) {
-  if (typeof val !== 'string') {
-    throw new Error('val must be string');
+    if (!methodName) {
+      return allMethods;
+    }
+
+    return allMethods[methodName];
   }
-  axi.defaults.headers[key] = val;
-  console.log('[setHeaderProp] after set!', key, axi.defaults);
+
+  get _getHeaders() {
+    return this._axi.defaults.headers;
+  }
+  // #endregion accessor
+
+  // #region ctor
+  constructor() {
+    const baseurl = envMap.get('baseurl') ?? 'http://localhost:3001';
+
+    this._axi = axios.create({
+      baseURL: baseurl
+    });
+  }
+  // #endregion ctor
+
+  // #region behaviour
+  setHeaderProp(key, val) {
+    if (typeof val !== 'string') {
+      throw new Error('val must be string');
+    }
+    this._getHeaders()[key] = val;
+    console.log('[setHeaderProp] after set!', key, this._axi.defaults);
+  }
+
+  delHeaderProp(key) {
+    if (typeof key !== 'string') {
+      throw new Error('key must be string');
+    }
+
+    this._getHeaders()[key] = undefined;
+    console.log('[setHeaderProp] after delete!', key, this._axi.defaults);
+  }
+
+  setHeaderAuthorization(token) {
+    this._axi.setHeaderProp('Authorization', `Bearer ${token}`);
+  }
+
+  delHeaderAuthorization() {
+    this._axi.delHeaderProp('Authorization');
+  }
+  // #endregion behaviour
 }
 
-export function delHeaderProp(key) {
-  if (typeof key !== 'string') {
-    throw new Error('key must be string');
-  }
-
-  axi.defaults.headers[key] = undefined;
-  console.log('[setHeaderProp] after delete!', key, axi.defaults);
-}
-
-export default {
-  get: axi.get,
-  post: axi.post,
-  put: axi.put,
-  delete: axi.put,
-  patch: axi.patch
-};
+export default new Axi();
