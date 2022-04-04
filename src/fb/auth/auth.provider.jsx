@@ -8,7 +8,9 @@ export const AuthCtx = createContext(initialState);
 AuthCtx.displayName = 'Authorization Context';
 
 export function AuthCtxProvider({ children }) {
-  const [authInfo, setAuthInfo] = useState(null);
+  const [authInfo, setAuthInfo] = useState({
+    user: null
+  });
 
   return (
     <AuthCtx.Provider value={{ authInfo, setAuthInfo }}>

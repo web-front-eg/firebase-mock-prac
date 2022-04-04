@@ -13,4 +13,4 @@ envMap.set('storageBucket', env.REACT_APP_STORAGE_BUCKET);
 envMap.set('messagingSenderId', env.REACT_APP_MESSAGING_SENDER_ID);
 envMap.set('appId', env.REACT_APP_APP_ID);
 envMap.set('measurementId', env.REACT_APP_MEASUREMENT_ID);
-envMap.set('baseurl', env.REACT_APP_BASE_URL);
+envMap.set('mockBaseUrl', env.REACT_APP_MOCK_BASE_URL);

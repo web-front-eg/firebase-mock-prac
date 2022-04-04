@@ -15,7 +15,8 @@ import { AuthCtx } from './fb/auth/auth.provider';
 function App() {
   const { authInfo, setAuthInfo } = useContext(AuthCtx);
 
-  const AuthButtonJSX = authInfo ? (
+  console.log(authInfo);
+  const AuthButtonJSX = authInfo.user ? (
     <Button onClick={() => Auth.signOutAsync(setAuthInfo)} text='Logout' />
   ) : (
     <Button onClick={() => Auth.signInAsync(setAuthInfo)} text='Login' />

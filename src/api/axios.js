@@ -3,10 +3,15 @@ import { envMap } from '../env';
 
 class Axi {
   //#region field
+  // axios only instance
   _axi;
   //#endregion field
 
   // #region accessor
+  get axi() {
+    return this._axi;
+  }
+
   getMethods(methodName = '') {
     const allMethods = {
       get: this._axi.get,
@@ -22,15 +27,11 @@ class Axi {
 
     return allMethods[methodName];
   }
-
-  get _getHeaders() {
-    return this._axi.defaults.headers;
-  }
   // #endregion accessor
 
   // #region ctor
   constructor() {
-    const baseurl = envMap.get('baseurl') ?? 'http://localhost:3001';
+    const baseurl = envMap.get('mockBaseUrl') ?? 'http://localhost:3001';
 
     this._axi = axios.create({
       baseURL: baseurl
@@ -43,8 +44,10 @@ class Axi {
     if (typeof val !== 'string') {
       throw new Error('val must be string');
     }
-    this._getHeaders()[key] = val;
-    console.log('[setHeaderProp] after set!', key, this._axi.defaults);
+
+    const headers = this.axi.defaults.headers;
+    headers[key] = val;
+    console.log('[setHeaderProp] after set!', key, headers);
   }
 
   delHeaderProp(key) {
@@ -52,16 +55,21 @@ class Axi {
       throw new Error('key must be string');
     }
 
-    this._getHeaders()[key] = undefined;
-    console.log('[setHeaderProp] after delete!', key, this._axi.defaults);
+    const headers = this.axi.defaults.headers;
+    if (!Object.prototype.hasOwnProperty.call(headers, key)) {
+      throw new Error('current axios header has no key inside it!');
+    }
+
+    headers[key] = undefined;
+    console.log('[delHeaderProp] after delete!', key, headers);
   }
 
   setHeaderAuthorization(token) {
-    this._axi.setHeaderProp('Authorization', `Bearer ${token}`);
+    this.setHeaderProp('Authorization', `Bearer ${token}`);
   }
 
   delHeaderAuthorization() {
-    this._axi.delHeaderProp('Authorization');
+    this.delHeaderProp('Authorization');
   }
   // #endregion behaviour
 }
