@@ -29,8 +29,12 @@ class Auth {
   // #region behaviours
 
   _validateSignInResponse(signInResponse) {
-    if (signInResponse) return true;
-    else return false;
+    const { status } = signInResponse;
+    if (status == 201) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async signInAsync(setAuthInfo) {
@@ -56,14 +60,19 @@ class Auth {
     HttpClient.setHeaderAuthorization(jwt);
 
     // send sign in web request
-    const response = await HttpClient.getMethods()
-      .get('user/me')
-      .then(err => {
+    const http = HttpClient.getMethods();
+    const response = await http
+      .post('/api/user/signin', {
+        params: {
+          jwt: '4123k41sdasdafsda34jnk3fnwefkn246kj7467'
+        }
+      })
+      .catch(err => {
         throw err;
       });
+    console.log(response);
 
-    // const isValid = this._validateSignInResponse(response);
-    const isValid = true;
+    const isValid = this._validateSignInResponse(response);
 
     // update auth info
     if (!isValid) {
@@ -75,9 +84,10 @@ class Auth {
     });
   }
 
-  async signOutAsync() {
+  async signOutAsync(setAuthInfo) {
     // dispose additional any header data before signou
     HttpClient.delHeaderAuthorization();
+    setAuthInfo(null);
 
     // do sign-out
     return await fbSignOut(this._auth);
