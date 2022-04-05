@@ -56,11 +56,11 @@ class Auth {
     HttpClient.setHeaderAuthorization(jwt);
 
     // send sign in web request
-    // const response = await HttpClient.getMethods()
-    //   .get('user/me')
-    //   .then(err => {
-    //     throw err;
-    //   });
+    const response = await HttpClient.getMethods()
+      .get('user/me')
+      .then(err => {
+        throw err;
+      });
 
     // const isValid = this._validateSignInResponse(response);
     const isValid = true;

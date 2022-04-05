@@ -22,3 +22,15 @@ Content-Type: application/json
 ### GET a comment
 GET http://localhost:3001/api/posts/getComments?postId=1 HTTP/1.1
 Content-Type: application/json
+
+### POST request sign-in
+POST http://localhost:3001/api/user/signin HTTP/1.1
+Content-Type: application/json
+
+{
+    "jwt": "dfkjgvbnsdfkvnsdk"
+}
+
+### GET request sign-in
+GET http://localhost:3001/api/user/ HTTP/1.1
+Content-Type: application/json
