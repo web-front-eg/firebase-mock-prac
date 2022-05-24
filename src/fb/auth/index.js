@@ -1,10 +1,5 @@
 import { getApp } from 'firebase/app';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut as fbSignOut
-} from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut } from 'firebase/auth';
 
 import HttpClient from '../../api/axios';
 
@@ -35,10 +30,7 @@ class Auth {
 
   async signInAsync(setAuthInfo) {
     // sign in thru GoogleAuthProvider()
-    const result = await signInWithPopup(
-      this._auth,
-      this._googleAuthProvider
-    ).catch(onRejected => {
+    const result = await signInWithPopup(this._auth, this._googleAuthProvider).catch(onRejected => {
       throw new Error(
         '[error][auth][google] result from signInWithPopup + GoogleAuthProvider failed!',
         onRejected

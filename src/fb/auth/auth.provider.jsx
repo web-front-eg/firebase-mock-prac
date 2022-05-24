@@ -12,11 +12,7 @@ export function AuthCtxProvider({ children }) {
     user: null
   });
 
-  return (
-    <AuthCtx.Provider value={{ authInfo, setAuthInfo }}>
-      {children}
-    </AuthCtx.Provider>
-  );
+  return <AuthCtx.Provider value={{ authInfo, setAuthInfo }}>{children}</AuthCtx.Provider>;
 }
 
 AuthCtxProvider.propTypes = {
