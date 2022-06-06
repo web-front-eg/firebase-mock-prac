@@ -18,7 +18,7 @@ ReactDOM.render(
   <React.StrictMode>
     <AuthCtxProvider>
       <App />
-    </AuthCtxProvider>
+  </AuthCtxProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

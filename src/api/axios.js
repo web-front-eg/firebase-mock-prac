@@ -1,77 +1,71 @@
 import axios from 'axios';
 import { envMap } from '../env';
+import { HeaderImpl } from './header.impl';
+import { MethodsImpl } from './methods.impl';
+import { AuthorizationImpl } from './authorization.impl';
 
 class Axi {
-  //#region field
-  // axios only instance
-  _axi;
-  //#endregion field
+  constructor(axiConstructLayout = { isDevelopment: true }) {
+    this._isDevelopment = axiConstructLayout.isDevelopment;
 
-  // #region accessor
-  get axi() {
-    return this._axi;
-  }
-
-  getMethods(methodName = '') {
-    const allMethods = {
-      get: this._axi.get,
-      post: this._axi.post,
-      put: this._axi.put,
-      delete: this._axi.put,
-      patch: this._axi.patch
-    };
-
-    if (!methodName) {
-      return allMethods;
-    }
-
-    return allMethods[methodName];
-  }
-  // #endregion accessor
-
-  // #region ctor
-  constructor() {
     const baseurl = envMap.get('mockBaseUrl') ?? 'http://localhost:3001';
 
     this._axi = axios.create({
       baseURL: baseurl
     });
-  }
-  // #endregion ctor
 
-  // #region behaviour
+    this._methodsProvider = new MethodsImpl(this._axi);
+
+    const headers = this.headers;
+
+    this._headerImpl = new HeaderImpl(headers);
+
+    this._authImpl = new AuthorizationImpl(
+      this._headerImpl.setHeaderProp,
+      this._headerImpl.deleteHeaderProp
+    );
+  }
+
+  //#region fields
+  // axios singleton
+  _axi;
+  _methodsProvider;
+  _authImpl;
+
+  _isDevelopment;
+
+  get headers() {
+    return this._axi.defaults.headers;
+  }
+
+  get methods() {
+    return this._methodsProvider.methods;
+  }
+  //#endregion fields
+
+  //#region behaviour
   setHeaderProp(key, val) {
-    if (typeof val !== 'string') {
-      throw new Error('val must be string');
-    }
+    this._headerImpl.setHeaderProp(key, val);
 
-    const headers = this.axi.defaults.headers;
-    headers[key] = val;
-    console.log('[setHeaderProp] after set!', key, headers);
+    if (this._isDevelopment)
+      console.log('[setHeaderProp] after set!', key, this._headers);
   }
 
-  delHeaderProp(key) {
-    if (typeof key !== 'string') {
-      throw new Error('key must be string');
-    }
+  deleteHeaderProp(key) {
+    this._headerImpl.deleteHeaderProp(key);
 
-    const headers = this.axi.defaults.headers;
-    if (!Object.prototype.hasOwnProperty.call(headers, key)) {
-      throw new Error('current axios header has no key inside it!');
-    }
-
-    headers[key] = undefined;
-    console.log('[delHeaderProp] after delete!', key, headers);
+    if (this._isDevelopment)
+      console.log('[delHeaderProp] after delete!', key, this._headers);
   }
 
   setHeaderAuthorization(token) {
-    this.setHeaderProp('Authorization', `Bearer ${token}`);
+    this._authImpl.setHeaderAuthorization(token);
   }
 
   delHeaderAuthorization() {
-    this.delHeaderProp('Authorization');
+    this._authImpl.delHeaderAuthorization();
   }
-  // #endregion behaviour
+  //#endregion behaviour
 }
 
 export default new Axi();

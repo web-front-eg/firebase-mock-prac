@@ -1,13 +1,15 @@
-import Axi from '../axios';
+import Axi from '../src/api/axios';
 
 class MockService {
   async GET_getPostById(id) {
-    const response = await Axi.getMethods().get(`posts/${id}`);
+    const response = await Axi.methods.get(`posts/${id}`);
+    
     return response.data;
   }
 
   async GET_getCommentById(id) {
-    const response = await Axi.getMethods().get(`comments/${id}`);
+    const response = await Axi.methods.get(`comments/${id}`);
+
     return response.data;
   }
 
@@ -16,7 +18,8 @@ class MockService {
       throw new Error('name must be type of string');
     }
 
-    const response = await Axi.getMethods().get(`profile`);
+    const response = await Axi.methods.get('profile');
+
     return response.data;
   }
 }

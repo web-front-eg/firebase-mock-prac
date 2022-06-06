@@ -17,13 +17,19 @@ function App() {
   const { authInfo, setAuthInfo } = useContext(AuthCtx);
 
   console.log(authInfo);
-  const AuthButtonJSX = authInfo.user ? (
-    <Button onClick={() => Auth.signOutAsync(setAuthInfo)} text='Logout' />
-  ) : (
-    <Button onClick={() => Auth.signInAsync(setAuthInfo)} text='Login' />
-  );
 
-  return <div style={{ marginLeft: '5rem' }}>{AuthButtonJSX}</div>;
+  return (
+    <div style={{ marginLeft: '5rem' }}>
+      <Button
+        onClick={() =>
+          authInfo.user
+            ? Auth.signOutAsync(setAuthInfo)
+            : Auth.signInAsync(setAuthInfo)
+        }
+        text={authInfo.user ? 'Logout' : 'Login'}
+      />
+    </div>
+  );
 }
 
 export default App;

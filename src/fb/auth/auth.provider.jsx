@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import constate from 'constate';
 
 const initialState = {};
 
@@ -18,3 +19,19 @@ export function AuthCtxProvider({ children }) {
 AuthCtxProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.element])
 };
+
+// https://github.com/diegohaz/constate
+// export const [AuthContextProvider, useGetAuthInfo, useSetAuthInfo] = constate(
+//   () => {
+//     const [authInfo, setAuthInfo] = useState({
+//       user: null
+//     });
+
+//     return {
+//       authInfo,
+//       setAuthInfo
+//     };
+//   },
+//   v => v.authInfo,
+//   v => v.setAuthInfo
+// );

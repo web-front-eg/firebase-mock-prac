@@ -1,7 +1,11 @@
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const FONT_WEIGHT = isBold => (isBold ? 700 : 300);
 const defaultOnClickFn = () => console.log('button is clicked!');
+
+// const Button = styled.button()`
+// `
 
 function Button({
   onClick = defaultOnClickFn,
