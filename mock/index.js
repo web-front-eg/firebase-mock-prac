@@ -1,4 +1,4 @@
-const { Server } = require('./server/server');
+const { Server } = require('./server');
 
 const MOCK_SERVER_PORT_NUM = 3004;
 const MOCK_DB_JSON_NAME = 'db.json';

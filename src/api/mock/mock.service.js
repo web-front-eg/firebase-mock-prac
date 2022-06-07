@@ -1,9 +1,9 @@
-import Axi from '../src/api/axios';
+import Axi from '../axios';
 
 class MockService {
   async GET_getPostById(id) {
     const response = await Axi.methods.get(`posts/${id}`);
-    
+
     return response.data;
   }
 

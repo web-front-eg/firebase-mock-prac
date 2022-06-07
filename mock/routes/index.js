@@ -1,7 +1,10 @@
 const path = require('path');
 const jsonServer = require('json-server');
+const {
+  mockServices: { getCommentById, getPostById, getProfileByName }
+} = require('./mock');
 
-class Router {
+class Routes {
   constructor(jsonPath) {
     if (typeof jsonPath !== 'string') {
       throw new Error('[type mismatch] jsonPath must be string');
@@ -14,15 +17,22 @@ class Router {
     this._defaultRoutes = jsonServer.router(
       path.join(__dirname, '../model/', jsonPath)
     );
-    this._customRoutes = new Map();
   }
 
   useRouters(server) {
     server.use(jsonServer.bodyParser);
 
-    server.use(this._customRoutes);
+    server.get('/echo', (req, res) => {
+      res.jsonp(req.query);
+    });
+
+    getPostById.mapRoute(server);
+    getCommentById.mapRoute(server);
+    getProfileByName.mapRoute(server);
+
+    // 기본 json-server 방식 추가
     server.use(this._defaultRoutes);
   }
 }
 
-module.exports.Router = Router;
+module.exports.Routes = Routes;

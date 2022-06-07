@@ -1,15 +1,15 @@
 const jsonServer = require('json-server');
+const { logMiddleware } = require('./logger.middleware');
 
-class Middleware {
+class Middlewares {
   constructor() {
     this._defaultMiddlewares = jsonServer.defaults();
-    this._customMiddlewares = new Map();
   }
 
   useMiddlewares(server) {
     server.use(this._defaultMiddlewares);
-    server.use(this._customMiddlewares);
+    server.use(logMiddleware);
   }
 }
 
-module.exports.Middlewares = Middleware;
+module.exports.Middlewares = Middlewares;
