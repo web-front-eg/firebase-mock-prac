@@ -2,7 +2,7 @@
 import './index.css';
 
 // init imports
-import './fb';
+import './firebase';
 import './env';
 import './api/axios';
 
@@ -12,13 +12,13 @@ import ReactDOM from 'react-dom';
 
 // app
 import App from './App';
-import { AuthCtxProvider } from './fb/auth/auth.provider';
+import { AuthCtxProvider } from './firebase/auth/auth.provider';
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthCtxProvider>
       <App />
-  </AuthCtxProvider>
+    </AuthCtxProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,17 +1,15 @@
 export class MethodsImpl {
   constructor(axios) {
-    this._axios = axios;
+    this._axi = axios;
   }
 
   get methods() {
-    const allMethods = {
+    return {
       get: this._axi.get,
       post: this._axi.post,
       put: this._axi.put,
       delete: this._axi.put,
       patch: this._axi.patch
     };
-
-    return allMethods;
   }
 }

@@ -1,6 +1,5 @@
 export const envMap = new Map();
 
-// eslint-disable-next-line no-undef
 const env = process.env;
 if (!env) {
   throw new Error('fail to init dotenv!');

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { envMap } from '../env';
-import { HeaderImpl } from './header.impl';
-import { MethodsImpl } from './methods.impl';
-import { AuthorizationImpl } from './authorization.impl';
+import { HeaderImpl } from './impl/header.impl';
+import { MethodsImpl } from './impl/methods.impl';
+import { AuthorizationImpl } from './impl/authorization.impl';
 
 class Axi {
   constructor(axiConstructLayout = { isDevelopment: true }) {
@@ -27,7 +27,6 @@ class Axi {
   }
 
   //#region fields
-  // axios singleton
   _axi;
   _methodsProvider;
   _authImpl;
@@ -41,6 +40,7 @@ class Axi {
   get methods() {
     return this._methodsProvider.methods;
   }
+
   //#endregion fields
 
   //#region behaviour
@@ -65,7 +65,10 @@ class Axi {
   delHeaderAuthorization() {
     this._authImpl.delHeaderAuthorization();
   }
+
   //#endregion behaviour
 }
 
-export default new Axi();
+export default new Axi({
+  isDevelopment: process.env.ENV === 'development'
+});

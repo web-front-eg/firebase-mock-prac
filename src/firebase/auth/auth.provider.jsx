@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import constate from 'constate';
+// import constate from 'constate';
 
 const initialState = {};
 
@@ -26,7 +26,7 @@ AuthCtxProvider.propTypes = {
 //     const [authInfo, setAuthInfo] = useState({
 //       user: null
 //     });
-
+//
 //     return {
 //       authInfo,
 //       setAuthInfo

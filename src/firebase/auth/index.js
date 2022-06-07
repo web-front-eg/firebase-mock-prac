@@ -3,18 +3,15 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut as fbSignOut
+  signOut
 } from 'firebase/auth';
 
 import HttpClient from '../../api/axios';
 
 class Auth {
-  // #region field
   _auth;
   _googleAuthProvider;
-  // #endregion field
 
-  // #region ctor
   constructor() {
     const app = getApp();
     if (!app) {
@@ -24,9 +21,6 @@ class Auth {
     this._auth = getAuth(app);
     this._googleAuthProvider = new GoogleAuthProvider();
   }
-  // #endregion ctor
-
-  // #region behaviours
 
   _validateSignInResponse(signInResponse) {
     if (signInResponse) return true;
@@ -34,15 +28,12 @@ class Auth {
   }
 
   async signInAsync(setAuthInfo) {
-    // sign in thru GoogleAuthProvider()
+    // sign in using GoogleAuthProvider()
     const result = await signInWithPopup(
       this._auth,
       this._googleAuthProvider
-    ).catch(onRejected => {
-      throw new Error(
-        '[error][auth][google] result from signInWithPopup + GoogleAuthProvider failed!',
-        onRejected
-      );
+    ).catch(reason => {
+      throw reason.displayName;
     });
 
     // get a Google Access Token which can be used to access to the Google API.
@@ -67,12 +58,10 @@ class Auth {
 
     // update auth info
     if (!isValid) {
-      throw new Error('[SignIn] reponse is not valid!');
+      throw new Error('[SignIn] response is not valid!');
     }
 
-    setAuthInfo({
-      user
-    });
+    setAuthInfo({ user });
   }
 
   async signOutAsync(setAuthInfo) {
@@ -80,11 +69,10 @@ class Auth {
     HttpClient.delHeaderAuthorization();
 
     // do sign-out
-    await fbSignOut(this._auth);
+    await signOut(this._auth);
 
     setAuthInfo({ user: null });
   }
-  // #endregion behaviours
 }
 
 export default new Auth();
