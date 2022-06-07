@@ -1,35 +1,17 @@
 const jsonServer = require('json-server');
 
-const { Middlewares } = require('./middlewares');
+const { Middlewares } = require('../middleware/middlewares');
 const { Router } = require('./router');
 
 class Server {
-  _middlewaresImpl;
-  _routeImpl;
-
   constructor(mockDBJsonFileName) {
     this._server = jsonServer.create();
 
-    this._middlewaresImpl = new Middlewares(this.server);
-    this._routeImpl = new Router(this.server, mockDBJsonFileName);
+    this._middlewaresImpl = new Middlewares();
+    this._middlewaresImpl.useMiddlewares(this._server);
 
-    this._use();
-    this._route();
-  }
-
-  _server;
-  get server() {
-    return this._server;
-  }
-
-  _use() {
-    this._server.use(this._middlewaresImpl.middlewares);
-    this._server.use(this._routeImpl.router);
-    this._server.use(jsonServer.bodyParser);
-  }
-
-  _route() {
-    this._routeImpl.setRoute();
+    this._routeImpl = new Router(mockDBJsonFileName);
+    this._routeImpl.useRouters(this._server);
   }
 
   listen(portNum, useInitLog) {
@@ -44,4 +26,4 @@ class Server {
   }
 }
 
-module.exports.server = Server;
+module.exports.Server = Server;

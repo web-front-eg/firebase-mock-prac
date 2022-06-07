@@ -1,11 +1,8 @@
 const path = require('path');
+const jsonServer = require('json-server');
 
 class Router {
-  constructor(server, jsonPath) {
-    if (!server) {
-      throw new Error('[no instance] server is null');
-    }
-
+  constructor(jsonPath) {
     if (typeof jsonPath !== 'string') {
       throw new Error('[type mismatch] jsonPath must be string');
     }
@@ -14,15 +11,18 @@ class Router {
       throw new Error('[empty str] jsonPath cannot be empty');
     }
 
-    this._router = server.router(path.join(__dirname, '../model/', jsonPath));
+    this._defaultRoutes = jsonServer.router(
+      path.join(__dirname, '../model/', jsonPath)
+    );
+    this._customRoutes = new Map();
   }
 
-  _router;
-  get router() {
-    return this._router;
-  }
+  useRouters(server) {
+    server.use(jsonServer.bodyParser);
 
-  setRoute() {}
+    server.use(this._customRoutes);
+    server.use(this._defaultRoutes);
+  }
 }
 
 module.exports.Router = Router;
